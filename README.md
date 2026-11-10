@@ -1,3 +1,20 @@
+# Retrieval assistant for support operators
+
+A team project combining document retrieval and local language-model inference to help support operators answer questions. The implementation uses BGE embeddings, FAISS, a Vikhr language model served with vLLM, and interfaces through FastAPI, Streamlit and Telegram.
+
+## Explore the implementation
+
+- `retriever.py` — retrieval, context construction and response generation.
+- `classifier.py` — query classification.
+- `api.py` — `/predict` endpoint accepting a question and conversation history.
+- `streamlit_app.py` and `pages/` — operator interface.
+- `bot.py` and `message_router.py` — Telegram integration.
+- `демо.gif` — recorded demonstration.
+
+This fork retains the original team's implementation and documentation. Local setup requires the model weights, index files and compatible GPU dependencies referenced in the code. The tunnel addresses below are historical demo references.
+
+## Original documentation (Russian)
+
 # Интеллектуальный помощник оператора службы поддержки
 
 Этот проект предоставляет готовую реализацию **Retrieval-Augmented Generation** (RAG) системы, которая использует языковую модель для генерации ответов на основе поиска по базе данных (retriever). В основе системы лежат предварительно обученные модели LLM и FAISS для поиска релевантных документов.
@@ -35,7 +52,7 @@ print(answer)
 ### 2. **Запуск API**
 
 ```bash
-uvicorn api:app —port 1337
+uvicorn api:app --port 1337
 tuna http 1337
 ```
 Пример запроса
