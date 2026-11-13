@@ -1,77 +1,51 @@
 # Retrieval assistant for support operators
 
-A team project combining document retrieval and local language-model inference to help support operators answer questions. The implementation uses BGE embeddings, FAISS, a Vikhr language model served with vLLM, and interfaces through FastAPI, Streamlit and Telegram.
+**BGE · FAISS · vLLM · FastAPI · Streamlit · Telegram**
 
-## Explore the implementation
+A team implementation of a support-operator assistant combining document retrieval, local language-model inference and an interface for working with incoming questions.
 
-- `retriever.py` — retrieval, context construction and response generation.
-- `classifier.py` — query classification.
-- `api.py` — `/predict` endpoint accepting a question and conversation history.
-- `streamlit_app.py` and `pages/` — operator interface.
-- `bot.py` and `message_router.py` — Telegram integration.
-- `демо.gif` — recorded demonstration.
+## Architecture
 
-This fork retains the original team's implementation and documentation. Local setup requires the model weights, index files and compatible GPU dependencies referenced in the code. The tunnel addresses below are historical demo references.
+```mermaid
+flowchart LR
+    A[Question and conversation history] --> B[Query processing]
+    B --> C[BGE / FAISS retrieval]
+    C --> D[Context construction]
+    D --> E[Vikhr model / vLLM]
+    E --> F[Operator interface or API response]
+```
 
-## Original documentation (Russian)
+## Explore the code
 
-# Интеллектуальный помощник оператора службы поддержки
+| Path | Responsibility |
+| --- | --- |
+| [`retriever.py`](retriever.py) | Retrieval, context construction and answer generation. |
+| [`classifier.py`](classifier.py) | Query classification. |
+| [`api.py`](api.py) | FastAPI `/predict` endpoint for a question and conversation history. |
+| [`streamlit_app.py`](streamlit_app.py), [`pages/`](pages) | Support-operator interface. |
+| [`bot.py`](bot.py), [`message_router.py`](message_router.py) | Telegram integration. |
+| [`train_classifier.ipynb`](train_classifier.ipynb) | Classifier experiments. |
 
-Этот проект предоставляет готовую реализацию **Retrieval-Augmented Generation** (RAG) системы, которая использует языковую модель для генерации ответов на основе поиска по базе данных (retriever). В основе системы лежат предварительно обученные модели LLM и FAISS для поиска релевантных документов.
+## Demonstration
 
-## Установка
+![Support-operator interface](демо.gif)
 
-Необходимые библиотеки можно установить с помощью `pip`:
+## Local setup
+
+The implementation requires the model weights, index/data files, GPU dependencies and paths referenced in the code. Review those settings in your own environment before starting the services.
 
 ```bash
-pip install torch transformers langchain langchain_community faiss-gpu pandas tqdm fastapi xformers sentence-transformers aiogram pydub psycopg2
+uvicorn api:app --host 127.0.0.1 --port 1337
 ```
 
+In a separate terminal:
 
-### 1. **Использование LLM**
-
-1. Инициализация модели:
-
-```python
-from retriever import RetrieverLLM
-
-rag = RetrieverLLM()
-```
-
-2. Поиск и генерация ответа на запрос:
-
-```python
-question = ""
-
-# Генерация ответа на запрос
-answer = rag.generate_answer(question)
-print(answer)
-```
-
-
-### 2. **Запуск API**
-
-```bash
-uvicorn api:app --port 1337
-tuna http 1337
-```
-Пример запроса
-```python
-import requests
-
-response = requests.post("https://my-subdomen.ru.tuna.am/predict", 
-                         json={"query": 'льготы для  детей  РЖД?', 'history':''})
-print(f"{response.text}")
-```
-### 3. **Запуск Streamlit**
 ```bash
 streamlit run streamlit_app.py --server.port 1228
-ngrok http 1228
 ```
 
-### 4. **Запуск Tg-бота**
-- **Ссылка на телеграм бота**: https://t.me/sashamatveikostyabot
+The [original Russian documentation](docs/original-readme.ru.md) includes the dependency list, Python usage and historical demo references. A complete model run has not been revalidated during this documentation refresh.
 
-### 5. **Запуск портала**
-- **Ссылка на streamlit**: https://tadpole-innocent-usually.ngrok-free.app
-- ![Демо](демо.gif)
+## Team and provenance
+
+This fork preserves the original team's implementation. See the upstream repository linked by GitHub for the project's history; the public code is distinct from the private commercial deployments described in my profile.
